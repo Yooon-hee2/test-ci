@@ -1,0 +1,54 @@
+name: "Preview .dic file differences"
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened # PR이 열렸을 때
+      - synchronize # PR에 커밋이 추가될 때
+      - reopened # PR이 다시 열렸을 때
+
+jobs:
+  preview-dic-difference:
+    name: "preview-dic-difference"
+    runs-on: ubuntu-20.04
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}  # 현재 PR의 브랜치를 체크아웃
+
+      - name: Run Python file on current branch
+        run: |
+          python create_json.py
+          ind . -name '*.dic' -exec cp {} {}.current_branch \;
+
+      - name: Checkout main branch
+        run: |
+          git fetch origin
+          git checkout main
+
+      - name: Run Python file on main branch
+        run: |
+          python create_json.py
+          find . -name '*.dic' -exec cp {} {}.main_branch \;
+
+      - name: Compare .json files and save the diff
+        id: diff-json
+        run: |
+          {
+            echo 'DIFF<<EOF'
+            find . -name '*.dic.current_branch' | while read file; do
+              base_name=$(basename $file .current_branch)
+              diff $file ${file%.current_branch}.main_branch || true >> "$GITHUB_OUTPUT"
+            done
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Add PR comment with diff
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          message: |
+            ```diff
+            ${{ steps.diff-json.outputs.diff }}
+            ```
