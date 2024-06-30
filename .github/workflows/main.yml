@@ -54,7 +54,4 @@ jobs:
       - name: Add PR comment with diff
         uses: marocchino/sticky-pull-request-comment@v2
         with:
-          message: |
-            ```diff
-            ${{ steps.diff-json.outputs.diff }}
-            ```
+          message: ${{ steps.preview-dic-difference.outputs.DIFF }}
