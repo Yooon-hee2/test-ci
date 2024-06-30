@@ -36,20 +36,23 @@ jobs:
       - name: Compare .json files and save the diff
         id: diff-json
         run: |
+          {
+            echo 'DIFF<<EOF' >> $GITHUB_OUTPUT
             find . -name '*.dic.current_branch' | while read file; do
               base_name=$(basename $file .current_branch)
               diff_result=$(diff $file ${file%.current_branch}.main_branch || true)
               if [ -n "$diff_result" ]; then
-                echo "diff $file ${file%.current_branch}.main_branch" >> comment.md
-                echo '```diff' >> comment.md
-                echo "$diff_result" >> comment.md
-                echo '```' >> comment.md
-                echo "" >> comment.md
-                diff_result = ""
+                echo "diff $file ${file%.current_branch}.main_branch" >> $GITHUB_OUTPUT
+                echo '```diff' >> $GITHUB_OUTPUT
+                echo "$diff_result" >> $GITHUB_OUTPUT
+                echo '```' >> $GITHUB_OUTPUT
+                echo "" >> $GITHUB_OUTPUT
               fi
             done
+            echo 'EOF' >> $GITHUB_OUTPUT
+          }
 
       - name: Add PR comment with diff
         uses: marocchino/sticky-pull-request-comment@v2
         with:
-          path: comment.md
+          message: ${{ steps.diff-json.outputs.diff }}
