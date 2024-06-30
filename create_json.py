@@ -3,7 +3,7 @@ import json
 # Data to be written
 dictionary = {
     "name": "sathiyajith",
-    "rollno": 56,
+    "rollno": 5699,
     "cgpa": 8.6,
     "phonenumber": "9976770500"
 }
