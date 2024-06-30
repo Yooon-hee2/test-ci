@@ -45,6 +45,7 @@ jobs:
                 echo "$diff_result" >> comment.md
                 echo '```' >> comment.md
                 echo "" >> comment.md
+                diff_result = ""
               fi
             done
 
