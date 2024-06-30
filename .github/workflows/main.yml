@@ -34,7 +34,6 @@ jobs:
           find . -name '*.dic' -exec cp {} {}.main_branch \;
 
       - name: Compare .json files and save the diff
-        id: diff-json
         run: |
           diff_output="diff_output.txt"
           rm -f $diff_output
