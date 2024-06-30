@@ -15,11 +15,13 @@ jobs:
     steps:
       - name: "Checkout code"
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}  # 현재 PR의 브랜치를 체크아웃
 
       - name: Run Python file on current branch
         run: |
           python create_json.py
-          cp sample.json current_branch_output.json
+          ind . -name '*.dic' -exec cp {} {}.current_branch \;
 
       - name: Checkout main branch
         run: |
@@ -29,14 +31,24 @@ jobs:
       - name: Run Python file on main branch
         run: |
           python create_json.py
-          cp sample.json main_branch_output.json
+          find . -name '*.dic' -exec cp {} {}.main_branch \;
 
       - name: Compare .json files and save the diff
+        id: diff-json
         run: |
-          diff current_branch_output.json main_branch_output.json > diff_output.txt || true
+          {
+            echo 'DIFF<<EOF'
+            find . -name '*.dic.current_branch' | while read file; do
+              base_name=$(basename $file .current_branch)
+              diff $file ${file%.current_branch}.main_branch || true >> "$GITHUB_OUTPUT"
+            done
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
 
       - name: Add PR comment with diff
         uses: marocchino/sticky-pull-request-comment@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          path: diff_output.txt
+          message: |
+            ```diff
+            ${{ steps.diff-json.outputs.diff }}
+            ```

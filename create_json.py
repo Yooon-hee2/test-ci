@@ -2,7 +2,7 @@ import json
 
 # Data to be written
 dictionary = {
-    "name": "sathiyajith",
+    "name": "yoonhee",
     "rollno": 56,
     "cgpa": 8.6,
     "phonenumber": "9976770500"
@@ -20,7 +20,7 @@ dictionary = {
     "name": "sathiyajith",
     "rollno": 56,
     "cgpa": 8.6,
-    "phonenumber": "9976ㅁa770500"
+    "phonenumber": "9976770500"
 }
 
 
@@ -33,7 +33,7 @@ dictionary = {
     "name": "sathiyajith",
     "rollno": 56,
     "cgpa": 8.6,
-    "phonenumber": "997677aaa0500"
+    "phonenumber": "9976770500"
 }
  
 # Writing to sample.json
