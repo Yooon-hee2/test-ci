@@ -21,7 +21,7 @@ jobs:
       - name: Run Python file on current branch
         run: |
           python create_json.py
-          ind . -name '*.dic' -exec cp {} {}.current_branch \;
+          find . -name '*.dic' -exec cp {} {}.current_branch \;
 
       - name: Checkout main branch
         run: |
