@@ -40,7 +40,8 @@ jobs:
             echo 'DIFF<<EOF'
             find . -name '*.dic.current_branch' | while read file; do
               base_name=$(basename $file .current_branch)
-              diff $file ${file%.current_branch}.main_branch || true >> "$GITHUB_OUTPUT"
+              echo $file
+              diff $file ${file%.current_branch}.main_branch || true
             done
             echo EOF
           } >> "$GITHUB_OUTPUT"
