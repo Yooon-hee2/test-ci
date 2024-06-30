@@ -31,7 +31,7 @@ with open("sample2.dic", "w") as outfile:
 # Data to be written
 dictionary = {
     "name": "sathiyajith",
-    "rollno": 56,
+    "rollno": 31,
     "cgpa": 8.6,
     "phonenumber": "9976770500"
 }
