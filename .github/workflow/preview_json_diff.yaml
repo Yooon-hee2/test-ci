@@ -32,10 +32,19 @@ jobs:
           cp sample.json main_branch_output.json
 
       - name: Compare .json files and save the diff
+        id: diff-json
         run: |
-          diff current_branch_output.json main_branch_output.json > diff_output.txt || true
+          {
+            echo 'DIFF<<EOF'
+            diff current_branch_output.json main_branch_output.json || true
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
 
       - name: Add PR comment with diff
         uses: marocchino/sticky-pull-request-comment@v2
         with:
-          path: diff_output.txt
+        with:
+          message: |
+            ```diff
+            ${{ steps.diff-json.outputs.diff }}
+            ```
