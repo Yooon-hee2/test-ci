@@ -37,14 +37,18 @@ jobs:
         id: diff-json
         run: |
           {
-            echo 'DIFF<<EOF'
+            echo 'DIFF<<EOF' >> $GITHUB_OUTPUT
             find . -name '*.dic.current_branch' | while read file; do
               base_name=$(basename $file .current_branch)
-              echo $file
-              diff $file ${file%.current_branch}.main_branch || true
+              diff_result=$(diff $file ${file%.current_branch}.main_branch || true)
+              if [ -n "$diff_result" ]; then
+                echo "diff $file ${file%.current_branch}.main_branch" >> $GITHUB_OUTPUT
+                echo "$diff_result" >> $GITHUB_OUTPUT
+                echo "" >> $GITHUB_OUTPUT
+              fi
             done
-            echo EOF
-          } >> "$GITHUB_OUTPUT"
+            echo 'EOF' >> $GITHUB_OUTPUT
+          }
 
       - name: Add PR comment with diff
         uses: marocchino/sticky-pull-request-comment@v2
